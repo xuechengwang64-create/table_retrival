@@ -71,6 +71,11 @@ Output strictly as JSON with keyword arrays as keys and table name arrays as val
 # ── LLM Configuration ──
 import os
 
-LLM_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
-LLM_MAX_TOKENS = 4096
-LLM_TEMPERATURE = 0.3
+# Common
+LLM_MODEL = os.getenv("LLM_MODEL", "claude-sonnet-4-6")
+LLM_MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", "4096"))
+LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.3"))
+
+# OpenAI-compatible endpoint (set LLM_API_BASE to enable; otherwise uses Anthropic native)
+LLM_API_BASE = os.getenv("LLM_API_BASE", "")
+LLM_API_KEY = os.getenv("LLM_API_KEY", "")
