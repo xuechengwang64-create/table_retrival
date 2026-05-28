@@ -71,6 +71,11 @@ PROMPT_KEYWORDS_TO_TABLES = """你是一个数据库查询路由专家。请基�
 # ── LLM 配置 ──
 import os
 
-LLM_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
-LLM_MAX_TOKENS = 4096
-LLM_TEMPERATURE = 0.3
+# 通用配置
+LLM_MODEL = os.getenv("LLM_MODEL", "claude-sonnet-4-6")
+LLM_MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", "4096"))
+LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.3"))
+
+# OpenAI 兼容接口（设置了 LLM_API_BASE 即启用，否则走 Anthropic 原生 API）
+LLM_API_BASE = os.getenv("LLM_API_BASE", "")
+LLM_API_KEY = os.getenv("LLM_API_KEY", "")
