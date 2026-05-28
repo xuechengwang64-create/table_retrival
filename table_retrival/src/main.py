@@ -182,8 +182,16 @@ def main():
         help="Path to query samples CSV"
     )
     parser.add_argument(
-        "--model", default=None,
-        help="Anthropic model name (default from ANTHROPIC_MODEL env or claude-sonnet-4-6)"
+        "--api-key", default=None, required=False,
+        help="API key for the LLM endpoint"
+    )
+    parser.add_argument(
+        "--api-base", default=None, required=False,
+        help="Base URL for the OpenAI-compatible LLM endpoint"
+    )
+    parser.add_argument(
+        "--model", default="gpt-3.5-turbo",
+        help="Model name (default: gpt-3.5-turbo)"
     )
     args = parser.parse_args()
 
@@ -203,7 +211,12 @@ def main():
         print(f"  {tbl}: usage={s['usage_count']}, co_tables={list(s['co_tables'].keys())}")
 
     # ── Initialize LLM client ──
-    client = LLMClient(model=args.model, dry_run=args.dry_run)
+    client = LLMClient(
+        api_key=args.api_key or "",
+        base_url=args.api_base or "",
+        model=args.model,
+        dry_run=args.dry_run,
+    )
 
     # ── Run Prompt 1 ──
     print("[4/5] Running Prompt 1: table → keywords ...")
