@@ -1,0 +1,102 @@
+{
+  "NetworkDeviceSummary": {
+    "usage_count": 1,
+    "query_contexts": [
+      "Query CPU utilization trend of all switches in the last 24 hours"
+    ],
+    "co_tables": {
+      "NetworkDevice": 1
+    }
+  },
+  "NetworkDevice": {
+    "usage_count": 10,
+    "query_contexts": [
+      "Query all network devices",
+      "Query the list of all switches in the production environment",
+      "Query CPU utilization of the switch named core-switch-01 in the last hour",
+      "Query CPU utilization trend of all switches in the last 24 hours",
+      "Query memory usage of all switch devices in the network",
+      "Query slot information of devices",
+      "Query port traffic of all router devices in the network",
+      "Query memory usage of database servers in the last day",
+      "Query alarm information of all network elements",
+      "Query devices whose switch port bandwidth utilization exceeds 80%"
+    ],
+    "co_tables": {
+      "NetworkDeviceKPI": 5,
+      "NetworkDeviceSummary": 1,
+      "DeviceSlot": 1
+    }
+  },
+  "DeviceSlotKPI": {
+    "usage_count": 2,
+    "query_contexts": [
+      "Query CPU utilization of all slots on a specific device",
+      "Query temperature of all slots in the last hour"
+    ],
+    "co_tables": {
+      "DeviceSlot": 2
+    }
+  },
+  "LUNGroup": {
+    "usage_count": 2,
+    "query_contexts": [
+      "Query LUN group information of flash storage devices",
+      "Query detailed information of LUN group named LUN-GROUP-01"
+    ],
+    "co_tables": {
+      "FlashStorage": 1
+    }
+  },
+  "SlotSummary": {
+    "usage_count": 1,
+    "query_contexts": [
+      "Query historical performance trend of slots"
+    ],
+    "co_tables": {
+      "DeviceSlot": 1
+    }
+  },
+  "DeviceSlot": {
+    "usage_count": 4,
+    "query_contexts": [
+      "Query slot information of devices",
+      "Query CPU utilization of all slots on a specific device",
+      "Query temperature of all slots in the last hour",
+      "Query historical performance trend of slots"
+    ],
+    "co_tables": {
+      "DeviceSlotKPI": 2,
+      "NetworkDevice": 1,
+      "SlotSummary": 1
+    }
+  },
+  "NetworkDeviceKPI": {
+    "usage_count": 5,
+    "query_contexts": [
+      "Query CPU utilization of the switch named core-switch-01 in the last hour",
+      "Query memory usage of all switch devices in the network",
+      "Query port traffic of all router devices in the network",
+      "Query memory usage of database servers in the last day",
+      "Query devices whose switch port bandwidth utilization exceeds 80%"
+    ],
+    "co_tables": {
+      "NetworkDevice": 5
+    }
+  },
+  "AlarmRecord": {
+    "usage_count": 0,
+    "query_contexts": [],
+    "co_tables": {}
+  },
+  "FlashStorage": {
+    "usage_count": 2,
+    "query_contexts": [
+      "Query all flash storage devices",
+      "Query LUN group information of flash storage devices"
+    ],
+    "co_tables": {
+      "LUNGroup": 1
+    }
+  }
+}

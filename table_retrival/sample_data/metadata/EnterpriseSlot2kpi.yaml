@@ -1,0 +1,19 @@
+table_name: EnterpriseSlot2kpi
+business_name_cn: 单板KPI指标表
+description_cn: 记录设备单板的性能KPI数据，包括单板温度、CPU利用率、内存使用率等指标。
+columns:
+  - name: slot_id
+    business_name: 单板ID
+    type: varchar(64)
+  - name: temperature
+    business_name: 温度
+    type: decimal(5,2)
+  - name: cpu_usage
+    business_name: CPU利用率
+    type: decimal(5,2)
+  - name: memory_usage
+    business_name: 内存使用率
+    type: decimal(5,2)
+  - name: collect_time
+    business_name: 采集时间
+    type: datetime

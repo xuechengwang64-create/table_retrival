@@ -1,0 +1,19 @@
+table_name: LUNGroup
+business_name_cn: LUN Group Information
+description_cn: Records basic information of LUN groups in flash storage, including LUN group name, parent storage device, LUN count, and total capacity.
+columns:
+  - name: lun_group_id
+    business_name: LUN Group ID
+    type: varchar(64)
+  - name: lun_group_name
+    business_name: LUN Group Name
+    type: varchar(128)
+  - name: storage_id
+    business_name: Parent Storage Device ID
+    type: varchar(64)
+  - name: lun_count
+    business_name: LUN Count
+    type: int
+  - name: total_capacity
+    business_name: Total Capacity
+    type: decimal(10,2)

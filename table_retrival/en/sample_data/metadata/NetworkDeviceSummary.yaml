@@ -1,0 +1,22 @@
+table_name: NetworkDeviceSummary
+business_name_cn: Network Device Performance Summary
+description_cn: Aggregated wide table of network device performance metrics, aggregated by hour/day granularity for performance trend analysis and alerting.
+columns:
+  - name: device_id
+    business_name: Device ID
+    type: varchar(64)
+  - name: time_granularity
+    business_name: Time Granularity
+    type: varchar(16)
+  - name: avg_cpu
+    business_name: Average CPU Utilization
+    type: decimal(5,2)
+  - name: max_cpu
+    business_name: Peak CPU Utilization
+    type: decimal(5,2)
+  - name: avg_memory
+    business_name: Average Memory Usage
+    type: decimal(5,2)
+  - name: stat_time
+    business_name: Statistics Time
+    type: datetime

@@ -1,0 +1,19 @@
+table_name: EnterpriseSlot
+business_name_cn: 设备单板信息表
+description_cn: 记录网络设备中单板/板卡的基本信息，包括单板型号、槽位号、所属设备、单板状态等。
+columns:
+  - name: slot_id
+    business_name: 单板ID
+    type: varchar(64)
+  - name: slot_model
+    business_name: 单板型号
+    type: varchar(64)
+  - name: slot_no
+    business_name: 槽位号
+    type: int
+  - name: device_id
+    business_name: 所属设备ID
+    type: varchar(64)
+  - name: slot_status
+    business_name: 单板状态
+    type: varchar(16)

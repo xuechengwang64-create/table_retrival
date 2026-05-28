@@ -1,0 +1,25 @@
+table_name: NetworkDevice
+business_name_cn: Network Device Info
+description_cn: Stores basic information of network devices, including device name, model, IP address, data center room, and device status. Core foundation table for network device management.
+columns:
+  - name: device_id
+    business_name: Device ID
+    type: varchar(64)
+  - name: device_name
+    business_name: Device Name
+    type: varchar(128)
+  - name: device_model
+    business_name: Device Model
+    type: varchar(64)
+  - name: device_type
+    business_name: Device Type
+    type: varchar(32)
+  - name: ip_address
+    business_name: IP Address
+    type: varchar(64)
+  - name: idc_room
+    business_name: Data Center Room
+    type: varchar(128)
+  - name: status
+    business_name: Device Status
+    type: varchar(16)

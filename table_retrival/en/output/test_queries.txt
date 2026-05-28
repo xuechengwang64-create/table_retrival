@@ -1,0 +1,8 @@
+Query all switches
+Query all alarms for network devices
+Query slot information of devices
+Query all flash storage devices
+Query alarm information of all network elements
+Query memory usage of database servers
+Query alarms and performance of routers
+some random nonsense query

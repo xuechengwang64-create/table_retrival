@@ -1,0 +1,19 @@
+table_name: FlashStorage
+business_name_cn: Flash Storage Device Information
+description_cn: Stores basic information of flash storage devices, including storage device name, model, serial number, management IP, and total capacity.
+columns:
+  - name: storage_id
+    business_name: Storage Device ID
+    type: varchar(64)
+  - name: storage_name
+    business_name: Storage Device Name
+    type: varchar(128)
+  - name: storage_model
+    business_name: Storage Model
+    type: varchar(64)
+  - name: total_capacity
+    business_name: Total Capacity
+    type: decimal(10,2)
+  - name: mgmt_ip
+    business_name: Management IP
+    type: varchar(64)

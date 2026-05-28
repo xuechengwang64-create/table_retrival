@@ -1,0 +1,22 @@
+table_name: kpi_network_device_info
+business_name_cn: 网络设备性能汇总表
+description_cn: 网络设备性能指标的汇总宽表，按小时/天粒度聚合设备性能数据，用于性能趋势分析和告警判定。
+columns:
+  - name: device_id
+    business_name: 设备ID
+    type: varchar(64)
+  - name: time_granularity
+    business_name: 时间粒度
+    type: varchar(16)
+  - name: avg_cpu
+    business_name: 平均CPU利用率
+    type: decimal(5,2)
+  - name: max_cpu
+    business_name: 峰值CPU利用率
+    type: decimal(5,2)
+  - name: avg_memory
+    business_name: 平均内存使用率
+    type: decimal(5,2)
+  - name: stat_time
+    business_name: 统计时间
+    type: datetime

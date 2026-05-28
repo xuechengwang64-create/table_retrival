@@ -1,0 +1,38 @@
+[
+  {
+    "keywords": ["network device", "switch"],
+    "tables": ["NetworkDevice", "NetworkDeviceKPI", "NetworkDeviceSummary"]
+  },
+  {
+    "keywords": ["network device", "router"],
+    "tables": ["NetworkDevice", "NetworkDeviceKPI"]
+  },
+  {
+    "keywords": ["slot"],
+    "tables": ["NetworkDevice", "DeviceSlot", "DeviceSlotKPI", "SlotSummary"]
+  },
+  {
+    "keywords": ["board"],
+    "tables": ["NetworkDevice", "DeviceSlot", "DeviceSlotKPI", "SlotSummary"]
+  },
+  {
+    "keywords": ["flash storage device", "LUN group"],
+    "tables": ["FlashStorage", "LUNGroup"]
+  },
+  {
+    "keywords": ["flash storage device"],
+    "tables": ["FlashStorage", "LUNGroup"]
+  },
+  {
+    "keywords": ["network element"],
+    "tables": ["NetworkDevice"]
+  },
+  {
+    "keywords": ["server"],
+    "tables": ["NetworkDevice", "NetworkDeviceKPI"]
+  },
+  {
+    "keywords": ["alarm"],
+    "tables": ["AlarmRecord"]
+  }
+]

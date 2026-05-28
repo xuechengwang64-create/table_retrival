@@ -1,0 +1,25 @@
+table_name: EntNetworkElement
+business_name_cn: 网络设备信息表
+description_cn: 存储网络设备的基本信息，包括设备名称、设备型号、IP地址、所属机房、设备状态等。是网络设备管理的核心基础表。
+columns:
+  - name: device_id
+    business_name: 设备ID
+    type: varchar(64)
+  - name: device_name
+    business_name: 设备名称
+    type: varchar(128)
+  - name: device_model
+    business_name: 设备型号
+    type: varchar(64)
+  - name: device_type
+    business_name: 设备类型
+    type: varchar(32)
+  - name: ip_address
+    business_name: IP地址
+    type: varchar(64)
+  - name: idc_room
+    business_name: 所属机房
+    type: varchar(128)
+  - name: status
+    business_name: 设备状态
+    type: varchar(16)

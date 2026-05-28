@@ -1,0 +1,102 @@
+{
+  "kpi_network_device_info": {
+    "usage_count": 1,
+    "query_contexts": [
+      "查询所有交换机最近24小时的CPU利用率趋势"
+    ],
+    "co_tables": {
+      "EntNetworkElement": 1
+    }
+  },
+  "StorageDevice": {
+    "usage_count": 2,
+    "query_contexts": [
+      "查询全部的闪存存储设备",
+      "查询闪存存储设备的LUN组信息"
+    ],
+    "co_tables": {
+      "LUNGroup": 1
+    }
+  },
+  "kpi_network_slot_info": {
+    "usage_count": 1,
+    "query_contexts": [
+      "查询单板的历史性能趋势"
+    ],
+    "co_tables": {
+      "EnterpriseSlot": 1
+    }
+  },
+  "EntNetworkElement": {
+    "usage_count": 10,
+    "query_contexts": [
+      "查询全部的网络设备",
+      "查询生产环境所有交换机的列表",
+      "查询名称为core-switch-01的交换机最近一小时的CPU利用率",
+      "查询所有交换机最近24小时的CPU利用率趋势",
+      "查询网络中所有交换机设备的内存使用率",
+      "查询设备的单板信息",
+      "查询全网路由器设备的端口流量",
+      "查询数据库服务器最近一天的内存使用率",
+      "查询所有网元的告警信息",
+      "查询交换机端口带宽利用率超过80%的设备"
+    ],
+    "co_tables": {
+      "EntNetworkElement2kpi": 5,
+      "kpi_network_device_info": 1,
+      "EnterpriseSlot": 1
+    }
+  },
+  "LUNGroup": {
+    "usage_count": 2,
+    "query_contexts": [
+      "查询闪存存储设备的LUN组信息",
+      "查询名称为LUN-GROUP-01的LUN组的详细信息"
+    ],
+    "co_tables": {
+      "StorageDevice": 1
+    }
+  },
+  "EnterpriseSlot2kpi": {
+    "usage_count": 2,
+    "query_contexts": [
+      "查询某台设备所有单板的CPU利用率",
+      "查询所有单板最近一小时的温度情况"
+    ],
+    "co_tables": {
+      "EnterpriseSlot": 2
+    }
+  },
+  "EnterpriseSlot": {
+    "usage_count": 4,
+    "query_contexts": [
+      "查询设备的单板信息",
+      "查询某台设备所有单板的CPU利用率",
+      "查询所有单板最近一小时的温度情况",
+      "查询单板的历史性能趋势"
+    ],
+    "co_tables": {
+      "EnterpriseSlot2kpi": 2,
+      "EntNetworkElement": 1,
+      "kpi_network_slot_info": 1
+    }
+  },
+  "EntNetworkElement2kpi": {
+    "usage_count": 5,
+    "query_contexts": [
+      "查询名称为core-switch-01的交换机最近一小时的CPU利用率",
+      "查询网络中所有交换机设备的内存使用率",
+      "查询全网路由器设备的端口流量",
+      "查询数据库服务器最近一天的内存使用率",
+      "查询交换机端口带宽利用率超过80%的设备"
+    ],
+    "co_tables": {
+      "EntNetworkElement": 5
+    }
+  },
+  "AlarmRecord": {
+    "usage_count": 0,
+    "query_contexts": [],
+    "co_tables": {}
+  }
+}

@@ -1,0 +1,19 @@
+table_name: StorageDevice
+business_name_cn: 闪存存储设备信息表
+description_cn: 存储闪存存储设备的基本信息，包括存储设备名称、型号、序列号、管理IP、存储容量等。
+columns:
+  - name: storage_id
+    business_name: 存储设备ID
+    type: varchar(64)
+  - name: storage_name
+    business_name: 存储设备名称
+    type: varchar(128)
+  - name: storage_model
+    business_name: 存储型号
+    type: varchar(64)
+  - name: total_capacity
+    business_name: 总容量
+    type: decimal(10,2)
+  - name: mgmt_ip
+    business_name: 管理IP
+    type: varchar(64)

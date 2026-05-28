@@ -1,0 +1,11 @@
+{
+  "NetworkDevice": ["network device", "switch", "router", "network element"],
+  "NetworkDeviceKPI": ["switch", "router", "network device", "server"],
+  "NetworkDeviceSummary": ["switch", "network device"],
+  "DeviceSlot": ["slot", "board", "network device"],
+  "DeviceSlotKPI": ["slot", "board"],
+  "SlotSummary": ["slot", "board"],
+  "FlashStorage": ["flash storage device"],
+  "LUNGroup": ["LUN group", "flash storage device"],
+  "AlarmRecord": ["alarm"]
+}

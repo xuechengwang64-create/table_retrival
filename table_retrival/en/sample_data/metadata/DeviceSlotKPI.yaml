@@ -1,0 +1,19 @@
+table_name: DeviceSlotKPI
+business_name_cn: Device Slot KPI Metrics
+description_cn: Records performance KPI data of device slots, including slot temperature, CPU utilization, and memory usage.
+columns:
+  - name: slot_id
+    business_name: Slot ID
+    type: varchar(64)
+  - name: temperature
+    business_name: Temperature
+    type: decimal(5,2)
+  - name: cpu_usage
+    business_name: CPU Utilization
+    type: decimal(5,2)
+  - name: memory_usage
+    business_name: Memory Usage
+    type: decimal(5,2)
+  - name: collect_time
+    business_name: Collection Time
+    type: datetime

@@ -1,0 +1,22 @@
+table_name: NetworkDeviceKPI
+business_name_cn: Network Device KPI Metrics
+description_cn: Records performance KPI metrics of network devices, including CPU utilization, memory usage, port traffic, and bandwidth utilization. Time-series performance data.
+columns:
+  - name: device_id
+    business_name: Device ID
+    type: varchar(64)
+  - name: cpu_usage
+    business_name: CPU Utilization
+    type: decimal(5,2)
+  - name: memory_usage
+    business_name: Memory Usage
+    type: decimal(5,2)
+  - name: port_traffic
+    business_name: Port Traffic
+    type: decimal(10,2)
+  - name: bandwidth_usage
+    business_name: Bandwidth Utilization
+    type: decimal(5,2)
+  - name: collect_time
+    business_name: Collection Time
+    type: datetime

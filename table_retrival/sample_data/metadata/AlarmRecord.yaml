@@ -1,0 +1,22 @@
+table_name: AlarmRecord
+business_name_cn: 告警记录表
+description_cn: 记录网络设备和存储设备产生的告警信息，包括告警级别、告警类型、告警内容、发生时间、恢复时间等。
+columns:
+  - name: alarm_id
+    business_name: 告警ID
+    type: varchar(64)
+  - name: device_id
+    business_name: 关联设备ID
+    type: varchar(64)
+  - name: alarm_level
+    business_name: 告警级别
+    type: varchar(16)
+  - name: alarm_type
+    business_name: 告警类型
+    type: varchar(32)
+  - name: alarm_content
+    business_name: 告警内容
+    type: text
+  - name: occur_time
+    business_name: 发生时间
+    type: datetime

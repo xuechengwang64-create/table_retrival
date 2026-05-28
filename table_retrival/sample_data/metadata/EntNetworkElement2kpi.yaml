@@ -1,0 +1,22 @@
+table_name: EntNetworkElement2kpi
+business_name_cn: 网络设备KPI指标表
+description_cn: 记录网络设备的性能KPI指标数据，包括CPU利用率、内存使用率、端口流量、带宽利用率等时序性能数据。
+columns:
+  - name: device_id
+    business_name: 设备ID
+    type: varchar(64)
+  - name: cpu_usage
+    business_name: CPU利用率
+    type: decimal(5,2)
+  - name: memory_usage
+    business_name: 内存使用率
+    type: decimal(5,2)
+  - name: port_traffic
+    business_name: 端口流量
+    type: decimal(10,2)
+  - name: bandwidth_usage
+    business_name: 带宽利用率
+    type: decimal(5,2)
+  - name: collect_time
+    business_name: 采集时间
+    type: datetime

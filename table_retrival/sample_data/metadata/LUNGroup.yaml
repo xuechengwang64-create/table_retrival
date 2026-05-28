@@ -1,0 +1,19 @@
+table_name: LUNGroup
+business_name_cn: LUN组信息表
+description_cn: 记录闪存存储中LUN组的基本信息，包括LUN组名称、所属存储设备、LUN数量、总容量等。
+columns:
+  - name: lun_group_id
+    business_name: LUN组ID
+    type: varchar(64)
+  - name: lun_group_name
+    business_name: LUN组名称
+    type: varchar(128)
+  - name: storage_id
+    business_name: 所属存储设备ID
+    type: varchar(64)
+  - name: lun_count
+    business_name: LUN数量
+    type: int
+  - name: total_capacity
+    business_name: 总容量
+    type: decimal(10,2)

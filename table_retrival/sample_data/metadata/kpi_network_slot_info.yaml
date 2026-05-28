@@ -1,0 +1,16 @@
+table_name: kpi_network_slot_info
+business_name_cn: 单板性能汇总表
+description_cn: 单板KPI指标的汇总宽表，按小时/天粒度聚合单板性能数据，用于单板性能趋势分析和异常检测。
+columns:
+  - name: slot_id
+    business_name: 单板ID
+    type: varchar(64)
+  - name: avg_temperature
+    business_name: 平均温度
+    type: decimal(5,2)
+  - name: max_temperature
+    business_name: 峰值温度
+    type: decimal(5,2)
+  - name: stat_time
+    business_name: 统计时间
+    type: datetime

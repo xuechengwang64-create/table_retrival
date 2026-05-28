@@ -1,0 +1,19 @@
+table_name: DeviceSlot
+business_name_cn: Device Slot Information
+description_cn: Records basic information of slots/boards in network devices, including slot model, slot number, parent device, and slot status.
+columns:
+  - name: slot_id
+    business_name: Slot ID
+    type: varchar(64)
+  - name: slot_model
+    business_name: Slot Model
+    type: varchar(64)
+  - name: slot_no
+    business_name: Slot Number
+    type: int
+  - name: device_id
+    business_name: Parent Device ID
+    type: varchar(64)
+  - name: slot_status
+    business_name: Slot Status
+    type: varchar(16)
