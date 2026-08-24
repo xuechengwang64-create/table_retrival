@@ -1,0 +1,44 @@
+# 任务：SQL 方言 Compiler 注册机制（entry points 唯一路径）
+
+## 角色
+你是资深 Python / 云原生后端工程师，在 smartbi 仓库（私有：jishu-Data/smartbi）工作。项目是 DTESmartBIService 微服务（ChatBI 智能报告/问数产品），Python 3 技术栈：Tornado + 公司 runtime SDK（2rd/pythonruntime）+ ibis/sqlglot（SQL 编译）。请用简体中文沟通，代码注释与文档用中文。
+
+## 业务背景
+SQL 生成是核心能力。原先编译入口只支持 DTE 一种方言（`ibis_ext.py` 硬编码 `_compiler = DTESQLCompiler()`）。现在需要支持多个 SQL 方言 Compiler，按调用方传入的 dialect 键分发。
+
+## 部署背景（决定技术方案的关键约束，必须遵守）
+- 新增的方言 Compiler **不在代码仓中**，作为三方件交付：被打包进镜像 → 导出镜像包 → 经公司内部 RTSP 机制导入微服务环境 → 容器内 **pip install** 装入 site-packages。
+- 因此 **entry points 是唯一可靠的发现路径**：pip install 必然写入发行版 `*.dist-info/entry_points.txt`，运行时 `importlib.metadata.entry_points()` 必然能读到。
+- **禁止**任何形式的代码仓目录扫描兜底（pkgutil 遍历 src 包）——新 Compiler 不在代码仓，扫描必然失败。
+
+## 需求清单
+
+### 1. Compiler 注册表（chatbi/src/_third_party/ibis/compiler_registry.py）
+- `ENTRY_POINT_GROUP = "chatbi.compilers"`。
+- `dialect_key(compiler)`：dialect 属性是字符串→小写；是类→取 `__name__` 小写（当前 DTESQLCompiler.dialect = DTESQL 方言类，键为 "dtesql"）。
+- `load_compilers()`（lru_cache）：只从 `metadata.entry_points(group=ENTRY_POINT_GROUP)` 发现，`ep.load()()` 懒加载实例化；同键重复抛 ValueError；**空注册抛 RuntimeError，错误信息提示"请确认已 pip install 包含 Compiler 的发行版"**。
+- `get_compiler(dialect)`：小写归一化后查表，未知方言抛带可用列表的 KeyError。
+- 模块顶层只 import 标准库，不引入 ibis（避免加载期循环依赖）。
+
+### 2. 编译入口改造（chatbi/src/_third_party/ibis/ibis_ext.py）
+- 模块加载时 `_compilers = load_compilers()`（即微服务加载时构建 {方言字符串: Compiler 实例}）。
+- `to_sql(expr, *, dialect: str = "dtesql", pretty=True, **kwargs)`：按 dialect 键取 Compiler，原 `_compiler.dialect` 两处替换为 `compiler.dialect`。默认 "dtesql" 保持原有行为不变。
+
+### 3. 打包注册（chatbi/src/pyproject.toml）
+- `[project.entry-points."chatbi.compilers"]` 注册 dtesql = "src._third_party.ibis.backends.sql.compilers.compiler:DTESQLCompiler"。
+- 注意：顶层包名为 `src`，与 setuptools src-layout 自动发现冲突，需 `[tool.setuptools] package-dir = {src = "."}` + 显式 packages 列表（新增子包需同步补充）。
+
+### 4. 测试（chatbi/tests/test_compiler_registry.py）
+- 覆盖：entry points 发现 "dtesql"；空注册报错（monkeypatch `importlib.metadata.entry_points` 返回空，断言 RuntimeError 且含 "pip install"）；大小写不敏感（`get_compiler("DTESQL") is get_compiler("dtesql")`）；未知方言 KeyError；`to_sql(ibis.table(...), dialect="dtesql")` 冒烟。注意加 `load_compilers.cache_clear()` 的 fixture。
+
+## 约束
+- 遵守仓库 AGENTS.md 治理：需求不清不设计、设计不清不写代码、验证标准不明确不声称完成；文档用简体中文；开发在 feature 分支 xuechengwang64-create/feature/compiler-registry 上进行（若不存在则基于 master 创建）。
+- **不要 git commit / push**，除非用户明确要求。
+- 本地验证命令：`PYTHONPATH=2rd/pythonruntime/src .venv/bin/python -m pytest chatbi/tests/ -q`（需先 `pip install -e ./chatbi/src` 使 entry points 生效）。
+- 涉及机密：SQL 生成核心实现、claim 部署配置规范不写入代码与文档。**SQL 生成接口部分由用户本人负责，不在本任务范围内**。
+
+## 验收标准
+1. compiler_registry.py 无任何目录扫描逻辑，只有 entry points 一条发现路径；
+2. 空注册报错信息提示 pip install；
+3. to_sql(dialect=...) 按键分发，默认 dtesql 行为与改造前一致；
+4. registry 相关 pytest 全部通过。
