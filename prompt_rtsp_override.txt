@@ -1,0 +1,102 @@
+# 任务：实现 rtsp 后装包的服务方法覆盖与 Compiler 扩展感知机制
+
+## 角色
+你是资深 Python / 云原生后端工程师，在 smartbi 仓库工作。项目是 DTESmartBIService 微服务（ChatBI 智能报告/问数产品），Python 3 技术栈：Tornado + 公司 runtime SDK + ibis/sqlglot。请用简体中文沟通，代码注释与文档用中文。
+
+## 业务背景
+产品会在服务包之外，以镜像包形式后装一个三方包（下称 rtsp 包）。rtsp 包包含两类内容：
+1. **对原本服务方法的完全重写**（要求：完全覆盖原方法）；
+2. **扩展的 SQL 方言 Compiler**。
+
+关键约束：产品组装环境是**一个包一个包装**，rtsp 包可能晚于服务包安装，甚至服务已经启动后才装上。因此：**加载/感知过程不能放在微服务启动时，也不能放在接口调用入口（组内专家要求"静态"：不得有刻意的调用过程）**。要求是：rtsp 包装好后，服务代码能**自动感知并应用覆盖，且实时检查更新**（轮询机制）。
+
+## 已确认的设计决策（必须遵守）
+1. **entry points 作为发现源**（唯一路径，不扫描代码仓目录）：
+   - 服务端新增 entry point 组 `chatbi.overrides`；
+   - rtsp 包在其 pyproject.toml 注册：`[project.entry-points."chatbi.overrides"] install = "rtsp_plugin:install"`；
+   - 发现方式：`importlib.metadata.entry_points(group="chatbi.overrides")`——它每次调用都重扫 sys.path，天然支持"后装被发现"，无需重启。
+2. **后台守护线程轮询**（满足"静态"：业务代码零调用）：
+   - 在服务启动注册入口（{{ 服务启动注册入口 }}）拉起一个 daemon 线程；
+   - 每 {{ 轮询间隔秒数 }}（默认 15）秒扫描一次 `chatbi.overrides` 组；
+   - 用 `(entry_point 名, 发行版版本号)` 做去重（版本变化视为需要重新应用），保证幂等；
+   - 单次应用失败不能杀死轮询线程（try/except + 日志），继续下一轮。
+3. **应用契约（函数式，禁用 import 副作用）**：
+   - entry point 值指向 `install(surface)` 函数；服务端把被覆盖方法的宿主模块/类（{{ 被覆盖方法宿主（服务端） }}）作为 surface 传入；
+   - rtsp 的 install 实现为**类属性替换**：`surface.原方法名 = 新实现`，要求幂等（重复赋值天然安全）；
+   - 不做模块级副作用式覆盖，不在 sys.modules 里动手脚。
+4. **同步刷新 Compiler 注册表**（隐藏的坑，必须处理）：
+   - 现有 `load_compilers()`（{{ compiler_registry.py 路径 }}）带 lru_cache，且 ibis_ext 在启动时加载——rtsp 后装的新方言会被冻结缺失；
+   - 轮询发现新 entry point 后，必须调用 `load_compilers.cache_clear()`，让后续 `get_compiler(dialect)` 重新发现。
+5. **新增文件/改动面**：
+   - 服务端新增轮询模块（建议 `src/plugin_poller.py`），并在启动注册入口挂起线程；
+   - 服务端在 {{ compiler_registry.py 路径 }} 保持现有职责不变，只确保可 cache_clear；
+   - rtsp 包：在 {{ rtsp 的 pyproject.toml }} 加 entry point 注册；新建/修改 {{ rtsp 重写方法实现文件 }} 提供 `install(surface)`；{{ rtsp 扩展 Compiler 实现文件 }} 按现有 Compiler 规范定义（SQLGlotCompiler 子类 + dialect 属性）。
+
+## 参考设计（轮询模块骨架，可在此基础上完善）
+```python
+# src/plugin_poller.py
+import threading, time, logging
+from importlib import metadata
+from src._third_party.ibis.compiler_registry import load_compilers
+
+OVERRIDE_GROUP = "chatbi.overrides"
+POLL_INTERVAL = 15
+_applied = set()          # {(ep.name, dist.version)}
+
+def _apply_once(surface):
+    changed = False
+    for ep in metadata.entry_points(group=OVERRIDE_GROUP):
+        dist = ep.dist
+        version = dist.version if dist else "?"
+        key = (ep.name, version)
+        if key in _applied:
+            continue
+        ep.load()(surface)          # 调用 rtsp 的 install(surface)
+        _applied.add(key)
+        changed = True
+        logging.info("applied override %s (%s)", ep.name, version)
+    if changed:
+        load_compilers.cache_clear()    # 新 Compiler 才能被发现
+
+def _poller(surface):
+    while True:
+        try:
+            _apply_once(surface)
+        except Exception:
+            logging.exception("apply overrides failed")
+        time.sleep(POLL_INTERVAL)
+
+def start_plugin_poller(surface):
+    threading.Thread(target=_poller, args=(surface,), daemon=True).start()
+```
+
+## 约束
+- **静态**：业务代码路径（controller/business 调用链）不得出现任何加载/应用调用，一切由轮询线程自治；
+- 轮询线程不得抛出未捕获异常导致服务退出；
+- 遵守仓库 AGENTS.md 治理；开发在独立 feature 分支；不 commit / push（除非用户明确要求）；
+- **不设计/实现 SQL 生成接口业务本身**（用户本人负责）；不修改 claim 等部署配置；
+- 注释与日志用中文；日志需能观察到"何时应用了哪个覆盖"。
+
+## 涉及文件（以实际仓库为准）
+- {{ 服务包源码根目录 }} 下的服务代码
+- {{ compiler_registry.py 路径 }}
+- {{ 服务启动注册入口 }}
+- {{ 被覆盖方法宿主（服务端） }}
+- {{ rtsp 包源码根目录 }}
+- {{ rtsp 的 pyproject.toml }}
+- {{ rtsp 重写方法实现文件 }}
+- {{ rtsp 扩展 Compiler 实现文件 }}
+- {{ 测试目录 }}（可选）
+
+## 测试方案（必须实现）
+1. **模拟后装单测**：测试中构造一个临时目录，手写一个假发行版 `fake_rtsp-1.0.dist-info/entry_points.txt`（内容为 `[chatbi.overrides] install = fake_rtsp_plugin:install`，同名 py 文件提供 install 与假 Compiler），用 `sys.path.insert` 引入——**先断言首次扫描发现不到，插入后再扫描能发现**；
+2. 触发一次 `_apply_once(surface)`，断言 surface 上的原方法被替换、再次触发不变（幂等）；
+3. 断言新 dialect 经 `load_compilers.cache_clear()` 后可被 `get_compiler` 找到（假 Compiler 注册为测试用方言键）；
+4. 轮询线程不因单次异常退出（用抛异常的假 install 验证）。
+
+## 验收标准
+1. 服务启动后不依赖 rtsp 存在，一切功能照常；
+2. rtsp 包任何时间装上，最迟 {{ 轮询间隔秒数 }} 秒内被感知并完成方法覆盖与 Compiler 刷新，无需重启；
+3. 业务代码路径零改动、零调用；
+4. 覆盖幂等、可升级（版本变化后重新应用）；
+5. 上述测试全部通过。
